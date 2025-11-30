@@ -52,12 +52,53 @@ function env($key, $default = null)
 load_dotenv(__DIR__ . '/.env');
 
 // Database configuration using environment variables (fallback to previous defaults)
+
+// Allow DATABASE_URL (e.g. mysql://user:pass@host:3306/dbname) to override individual vars
+$databaseUrl = env('DATABASE_URL', null);
+if ($databaseUrl) {
+    $parts = parse_url($databaseUrl);
+    if ($parts !== false) {
+        $urlUser = isset($parts['user']) ? $parts['user'] : null;
+        $urlPass = isset($parts['pass']) ? $parts['pass'] : null;
+        $urlHost = isset($parts['host']) ? $parts['host'] : null;
+        $urlPort = isset($parts['port']) ? $parts['port'] : null;
+        $urlPath = isset($parts['path']) ? ltrim($parts['path'], '/') : null;
+
+        if ($urlUser) {
+            putenv("DB_USER={$urlUser}"); $_ENV['DB_USER'] = $urlUser;
+        }
+        if ($urlPass) {
+            putenv("DB_PASS={$urlPass}"); $_ENV['DB_PASS'] = $urlPass;
+        }
+        if ($urlHost) {
+            putenv("DB_HOST={$urlHost}"); $_ENV['DB_HOST'] = $urlHost;
+        }
+        if ($urlPort) {
+            putenv("DB_PORT={$urlPort}"); $_ENV['DB_PORT'] = $urlPort;
+        }
+        if ($urlPath) {
+            putenv("DB_NAME={$urlPath}"); $_ENV['DB_NAME'] = $urlPath;
+        }
+    }
+}
+
 $host = env('DB_HOST', 'localhost');
 $user = env('DB_USER', 'root');
 $pass = env('DB_PASS', '');
 $db   = env('DB_NAME', 'benahinyuk');
+$port = env('DB_PORT', 3306);
+$socket = env('DB_SOCKET', null);
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+// If DB_SOCKET is provided, prefer connecting via socket.
+if ($socket) {
+    $conn = mysqli_connect($host, $user, $pass, $db, null, $socket);
+} else {
+    // Connecting to 'localhost' uses a Unix socket by default in libmysqlclient.
+    // If MySQL isn't available via socket (common in Docker containers),
+    // force TCP by using 127.0.0.1 or by providing a remote host.
+    $hostToUse = ($host === 'localhost') ? '127.0.0.1' : $host;
+    $conn = mysqli_connect($hostToUse, $user, $pass, $db, (int)$port);
+}
 
 if (!$conn) {
     die("Gagal terhubung ke database: " . mysqli_connect_error());
