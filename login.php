@@ -49,7 +49,7 @@ if (isset($_POST['login'])) {
             <div class="nav-right">
                 <a href="login.php" class="nav-link" style="color: #1a73e8; font-weight: 600;">Login</a>
                 <!-- <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a> -->
-                <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+                <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang</a>
 
             </div>
         </div>
@@ -83,7 +83,7 @@ if (isset($_POST['login'])) {
 
                 <div class="login-footer">
                     <p>Belum punya akun?</p>
-                    <a href="register.php" class="link-blue">Daftar Sekarang (Rp 15.000)</a>
+                    <a href="register.php" class="link-blue">Daftar Sekarang</a>
                 </div>
             </div>
         </div>

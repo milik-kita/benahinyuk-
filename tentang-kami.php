@@ -28,7 +28,7 @@ session_start();
                 <?php else: ?>
                     <a href="login.php" class="nav-link">Login</a>
                     <!-- <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a> -->
-                    <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+                    <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang</a>
 
                 <?php endif; ?>
             </div>
