@@ -250,6 +250,8 @@ if (isset($_SESSION['user_id'])) {
             <div class="modal-buttons">
                 <button onclick="tutupModal()" class="btn-cancel">Nanti Dulu</button>
                 <a href="register.php" class="btn-confirm">Daftar Sekarang</a>
+                <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn-confirm">Daftar Sekarang</a>
+
             </div>
         </div>
     </div>

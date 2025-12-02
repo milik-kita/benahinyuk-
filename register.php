@@ -72,6 +72,7 @@ if (isset($_POST['daftar'])) {
             <div class="nav-right">
                 <a href="login.php" class="nav-link">Login</a>
                 <button class="btn btn-orange" style="opacity: 0.5; cursor: default;">Daftar Sekarang</button>
+                
             </div>
         </div>
     </nav>

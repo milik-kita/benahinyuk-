@@ -24,7 +24,9 @@ session_start();
                     <a href="logout.php" class="btn btn-orange" style="background-color: #ef4444;">Logout</a>
                 <?php else: ?>
                     <a href="login.php" class="nav-link">Login</a>
-                    <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+                    <!-- <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a> -->
+                    <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+
                 <?php endif; ?>
             </div>
         </div>

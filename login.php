@@ -48,7 +48,9 @@ if (isset($_POST['login'])) {
             </a>
             <div class="nav-right">
                 <a href="login.php" class="nav-link" style="color: #1a73e8; font-weight: 600;">Login</a>
-                <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+                <!-- <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a> -->
+                <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
+
             </div>
         </div>
     </nav>
