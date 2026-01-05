@@ -45,7 +45,8 @@ if (isset($_SESSION['user_id'])) {
                     <a href="logout.php" class="btn btn-orange" style="background-color: #ef4444;">Logout</a>
                 <?php else: ?>
                     <a href="login.php" class="nav-link">Login</a>
-                    <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar  Sekarang</a>
+                    <!-- <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn btn-orange">Daftar  Sekarang</a> -->
+                    <a href="register.php" class="btn btn-orange">Daftar Sekarang (Rp 15.000)</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -249,8 +250,8 @@ if (isset($_SESSION['user_id'])) {
             
             <div class="modal-buttons">
                 <button onclick="tutupModal()" class="btn-cancel">Nanti Dulu</button>
-                <!-- <a href="register.php" class="btn-confirm">Daftar Sekarang</a> -->
-                <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn-confirm">Daftar Sekarang</a>
+                <a href="register.php" class="btn-confirm">Daftar Sekarang</a>
+                <!-- <a href="https://forms.gle/c4oXptnLeZgzfuVr9" target="_blank" class="btn-confirm">Daftar Sekarang</a> -->
 
             </div>
         </div>
