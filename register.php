@@ -167,20 +167,5 @@ if (isset($_POST['daftar'])) {
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const uploadText = document.getElementById('uploadText');
-
-        uploadArea.addEventListener('click', () => { fileInput.click(); });
-
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                uploadText.innerHTML = `<strong>File Terpilih:</strong> ${this.files[0].name}`;
-                uploadArea.style.borderColor = "#22c55e";
-                uploadArea.style.backgroundColor = "#f0fdf4";
-            }
-        });
-    </script>
 </body>
 </html>
