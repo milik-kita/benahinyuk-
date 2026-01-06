@@ -1,50 +1,92 @@
 <?php
 include 'koneksi.php';
 
+// Error logging function
+function logUploadError($message) {
+    $log_file = "logs/upload_errors.log";
+    if (!is_dir("logs")) {
+        mkdir("logs", 0755, true);
+    }
+    $timestamp = date("Y-m-d H:i:s");
+    $log_message = "[$timestamp] $message\n";
+    file_put_contents($log_file, $log_message, FILE_APPEND);
+}
+
+// Ensure uploads directory exists and has proper permissions
+if (!is_dir("uploads")) {
+    mkdir("uploads", 0755, true);
+}
+
 if (isset($_POST['daftar'])) {
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $wa = mysqli_real_escape_string($conn, $_POST['whatsapp']);
-
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $nama_file = $_FILES['bukti']['name'];
-    $tmp_file = $_FILES['bukti']['tmp_name'];
-    $ukuran_file = $_FILES['bukti']['size'];
-
-    $nama_baru = time() . "_" . $nama_file;
-    $path = "uploads/" . $nama_baru;
-
+    // Check if email already exists
     $cek_email = mysqli_query($conn, "SELECT email FROM users WHERE email = '$email'");
     if (mysqli_num_rows($cek_email) > 0) {
-        echo "<script>alert('Email sudah terdaftar! Gunakan email lain.');</script>";
+        echo "<script>alert('❌ Email sudah terdaftar! Gunakan email lain.');</script>";
+    } else if (empty($_FILES['bukti']['name'])) {
+        echo "<script>alert('❌ Harap upload bukti pembayaran!');</script>";
     } else {
-        if (!empty($nama_file)) {
+        // Handle file upload
+        $nama_file = $_FILES['bukti']['name'];
+        $tmp_file = $_FILES['bukti']['tmp_name'];
+        $ukuran_file = $_FILES['bukti']['size'];
+        $file_error = $_FILES['bukti']['error'];
+
+        // Validate file upload
+        $max_size = 5 * 1024 * 1024; // 5MB
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+        $file_ext = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
+
+        if ($file_error !== UPLOAD_ERR_OK) {
+            $error_msg = "Upload Error Code: $file_error";
+            logUploadError("$email - $error_msg");
+            echo "<script>alert('❌ Gagal upload: Error Code $file_error');</script>";
+        } else if ($ukuran_file > $max_size) {
+            $error_msg = "$email - File terlalu besar (" . ($ukuran_file / 1024 / 1024) . "MB)";
+            logUploadError($error_msg);
+            echo "<script>alert('❌ File terlalu besar! Maksimal 5MB.');</script>";
+        } else if (!in_array($file_ext, $allowed_ext)) {
+            $error_msg = "$email - Format file tidak didukung: $file_ext";
+            logUploadError($error_msg);
+            echo "<script>alert('❌ Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');</script>";
+        } else {
+            $nama_baru = time() . "_" . basename($nama_file);
+            $path = "uploads/" . $nama_baru;
+
             if (move_uploaded_file($tmp_file, $path)) {
+                // Chmod the uploaded file
+                chmod($path, 0644);
+
                 $sql = "INSERT INTO users (nama_lengkap, email, whatsapp, password, bukti_bayar, status) 
                         VALUES ('$nama', '$email', '$wa', '$password', '$nama_baru', 0)";
                 
                 if (mysqli_query($conn, $sql)) {
+                    logUploadError("$email - ✅ Upload Berhasil: $nama_baru");
+                    
                     $nomor_admin = "62895712883434"; 
                     $pesan = "Halo Admin, saya baru saja mendaftar di BenahinYuk a.n *$nama*. Saya sudah upload bukti transfer, mohon segera diaktifkan akun saya.";
                     $pesan_encoded = urlencode($pesan);
                     $link_wa = "https://wa.me/$nomor_admin?text=$pesan_encoded";
 
                     echo "<script>
-                        // Pesan yang muncul di Alert
                         alert('✅ Pendaftaran Berhasil! \\n\\nKlik OK untuk langsung konfirmasi ke WhatsApp Admin.');
-                        
-                        // Setelah klik OK, buka WhatsApp
                         window.location.href = '$link_wa';
                     </script>";
                 } else {
-                    echo "<script>alert('Error Database: " . mysqli_error($conn) . "');</script>";
+                    $error_msg = "$email - Database Error: " . mysqli_error($conn);
+                    logUploadError($error_msg);
+                    unlink($path); // Delete uploaded file if DB insert fails
+                    echo "<script>alert('❌ Error Database: " . mysqli_error($conn) . "');</script>";
                 }
             } else {
-                echo "<script>alert('Gagal upload gambar.');</script>";
+                $error_msg = "$email - Move file failed. Tmp: $tmp_file, Path: $path, Writable: " . (is_writable("uploads") ? "Yes" : "No");
+                logUploadError($error_msg);
+                echo "<script>alert('❌ Gagal upload gambar. Hubungi admin jika masalah berlanjut.');</script>";
             }
-        } else {
-            echo "<script>alert('Harap upload bukti pembayaran!');</script>";
         }
     }
 }
